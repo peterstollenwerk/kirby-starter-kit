@@ -11,12 +11,13 @@ $filename = 'symlink-hello.txt';
 $targetPath = $root . '/'. $filename;
 $targetExists = fileExists($targetPath);
 
-//mkdir is not recursive!!!!!????
-$symlinkRootRelativePath = '/symlink'; 
+$subdirName = date('Ymd-His');
+$symlinkRootRelativePath = '/' . 'symlink' . '/' . $subdirName . '/' . $subdirName; 
 $symlinkRoot = $root . $symlinkRootRelativePath;
 if(!is_dir($symlinkRoot)) {
-    mkdir($symlinkRoot);
+    mkdir($symlinkRoot, 0777, $recursively = true);
 }
+
 $symlinkRootExists = dirExists($symlinkRoot);
 
 
@@ -25,6 +26,7 @@ $symlinkPath = $symlinkRoot . '/' . $symlinkFilename;
 if(!file_exists($symlinkPath)) {
     symlink($targetPath, $symlinkPath);
 }
+$symlinkTarget = readlink($symlinkPath);
 
 $symlinkExists = fileExists($symlinkPath);
 $symlinkRelativePath = $symlinkRootRelativePath . '/' . $symlinkFilename; 
@@ -48,6 +50,7 @@ $symlinkRelativePath = $symlinkRootRelativePath . '/' . $symlinkFilename;
 <span class="label">$symlinkPath:</span>  <?= $symlinkPath ?>  <br>
 <span class="label">$symlinkRootExists:</span> <span data-file-exists="<?= $symlinkRootExists ?>"><?= $symlinkRootExists ?></span> <br>
 <span class="label">$symlinkExists:</span> <span data-file-exists="<?= $symlinkExists ?>"><?= $symlinkExists ?></span> <br>
+<span class="label">$symlinkTarget:</span> <span data-file-exists="<?= $symlinkTarget ?>"><?= $symlinkTarget ?></span> <br>
 <br>
 <br>
 <span class="label">$symlinkRootRelativePath:</span> <span data-file-exists="<?= $symlinkRootRelativePath ?>"><?= $symlinkRootRelativePath ?></span> <br>
