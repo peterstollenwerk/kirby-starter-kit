@@ -1,42 +1,63 @@
 <?php
+function fileExists($path) {
+    return (file_exists($path)) ? 'true' : 'false';
+};
+function dirExists($path) {
+    return is_dir($path) ? 'true' : 'false';
+}
 
 $root = realpath(__DIR__);
-echo "Root: " . $root . '<br>';
+$filename = 'symlink-hello.txt';
+$targetPath = $root . '/'. $filename;
+$targetExists = fileExists($targetPath);
 
-$target =  $root . '/symlink-test.txt';
-echo "Target: " . $target . '<br>';
+//mkdir is not recursive!!!!!????
+$symlinkRootRelativePath = '/symlink'; 
+$symlinkRoot = $root . $symlinkRootRelativePath;
+if(!is_dir($symlinkRoot)) {
+    mkdir($symlinkRoot);
+}
+$symlinkRootExists = dirExists($symlinkRoot);
 
-$f = file_exists($target);
-echo "Target file exists: ";
-var_dump($f);
-echo '<br>';
-echo '<br>';
 
+$symlinkFilename = 'test.txt';
+$symlinkPath = $symlinkRoot . '/' . $symlinkFilename;
+if(!file_exists($symlinkPath)) {
+    symlink($targetPath, $symlinkPath);
+}
 
-$link = $root . '/media/symlink_test/test.txt';
-echo 'Link: ' . $link . '<br>';
-$dir = dirname($link);
-echo 'Dirname: ' . $dir . '<br>';
-
-echo 'Dirname: ';
-var_dump($dir);
-
-mkdir($dir); // not recursive!
-symlink($target, $link);
-sleep(1);
-
-$f = file_exists($link);
-
-echo '<br>';
-echo 'Symlink exists: ';
-var_dump($f);
-echo '<br>';
+$symlinkExists = fileExists($symlinkPath);
+$symlinkRelativePath = $symlinkRootRelativePath . '/' . $symlinkFilename; 
 
 ?>
 
-<a href="<?= '/media/symlink_test/test.txt' ?>">/media/symlink_test/test.txt</a>
+
+
 <hr>
 
+<style>
+    .label { display: inline-block; min-width: 25ch; }
+    [data-file-exists="false"] { color: red; }
+    [data-file-exists="true"] { color: green; }
+</style>
+
+<span class="label">$root:</span> <?= $root ?> <br>
+<span class="label">$targetPath:</span> <?= $targetPath ?> <br>
+<span class="label">$targetExists:</span> <span data-file-exists="<?= $targetExists ?>"><?= $targetExists ?></span> <br>
+<br>
+<span class="label">$symlinkPath:</span>  <?= $symlinkPath ?>  <br>
+<span class="label">$symlinkRootExists:</span> <span data-file-exists="<?= $symlinkRootExists ?>"><?= $symlinkRootExists ?></span> <br>
+<span class="label">$symlinkExists:</span> <span data-file-exists="<?= $symlinkExists ?>"><?= $symlinkExists ?></span> <br>
+<br>
+<br>
+<span class="label">$symlinkRootRelativePath:</span> <span data-file-exists="<?= $symlinkRootRelativePath ?>"><?= $symlinkRootRelativePath ?></span> <br>
+<span class="label">$symlinkRelativePath:</span> <span data-file-exists="<?= $symlinkRelativePath ?>"><?= $symlinkRelativePath ?></span> <br>
+
+
+
+
+<br>
+<a href="<?= $symlinkRelativePath ?>"><?= $symlinkRelativePath ?></a>
 
 <?php
 
